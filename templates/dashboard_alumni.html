@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Alumni Dashboard</title>
+
+    {% load static %}
+
+    <!-- AOS Animation (First for quick load) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'css/dashboard_alumni.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.0/css/responsive.dataTables.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Typing & Particles -->
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+
+    <style>
+        body {
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+        body.loaded {
+            opacity: 1;
+        }
+        .flash-messages {
+            transition: all 0.5s ease-in-out;
+        }
+        .flash-message {
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .flash-message.fade-out {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="typing-title"></h1>
+        <div class="nav-toggle" onclick="toggleNav()">
+            <div></div><div></div><div></div>
+        </div>
+        <nav>
+            <ul id="nav-links">
+                <li><a href="{% url 'my_profile' %}">My Profile</a></li>
+                <li><a href="{% url 'dashboard_alumni' %}">Dashboard</a></li>
+                <li><a href="{% url 'alumni_directory' %}">Alumni Directory</a></li>
+                <li><a href="{% url 'view_jobs' %}">View Jobs</a></li>
+                <li><a href="{% url 'view_events' %}">View Events</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2 data-aos="fade-right" data-aos-duration="700" data-aos-easing="ease-in-out">Welcome, {{ request.user.first_name }} {{ request.user.last_name }}</h2>
+
+        {% if messages %}
+        <div class="flash-messages" data-aos="fade-down" data-aos-duration="600" data-aos-easing="ease-in-out">
+            {% for message in messages %}
+            <div class="flash-message flash-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- NEWS TABLE -->
+        <div class="section" data-aos="fade-up" data-aos-duration="600">
+            <h2>Latest News</h2>
+            <div class="table-responsive">
+                <table id="newsTable" class="display nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Content</th>
+                            <th>Posted On</th>
+                        </tr>
+                        <tr class="filters">
+                            <th><input type="text" placeholder="Search Title" /></th>
+                            <th><input type="text" placeholder="Search Content" /></th>
+                            <th><input type="text" placeholder="Search Date" /></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for news in news_list %}
+                        <tr>
+                            <td>{{ news.title }}</td>
+                            <td>{{ news.content }}</td>
+                            <td>{{ news.created_at }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- JOBS TABLE -->
+        <div class="section" data-aos="fade-up" data-aos-duration="600">
+            <h2>My Posted Jobs</h2>
+            <div class="table-responsive">
+                <table id="jobsTable" class="display nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Company</th>
+                            <th>Location</th>
+                            <th>Expiration Date</th>
+                            <th>Actions</th>
+                        </tr>
+                        <tr class="filters">
+                            <th><input type="text" placeholder="Search Title" /></th>
+                            <th><input type="text" placeholder="Search Company" /></th>
+                            <th><input type="text" placeholder="Search Location" /></th>
+                            <th><input type="text" placeholder="Search Date" /></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in user_jobs %}
+                        <tr>
+                            <td>{{ job.job_title }}</td>
+                            <td>{{ job.company }}</td>
+                            <td>{{ job.location }}</td>
+                            <td>{{ job.expiration_date }}</td>
+                            <td>
+                                <a href="{% url 'edit_own_job' job.id %}"><button>Edit</button></a>
+                                <form action="{% url 'delete_own_job' job.id %}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                                    {% csrf_token %}
+                                    <button type="submit">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <a href="{% url 'post_job' %}" class="post-job">Post a Job</a>
+        </div>
+
+        <!-- EVENTS TABLE -->
+        <div class="section" data-aos="fade-up" data-aos-duration="600">
+            <h2>My Posted Events</h2>
+            <div class="table-responsive">
+                <table id="eventsTable" class="display nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                        <tr class="filters">
+                            <th><input type="text" placeholder="Search Name" /></th>
+                            <th><input type="text" placeholder="Search Location" /></th>
+                            <th><input type="text" placeholder="Search Date" /></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in user_events %}
+                        <tr>
+                            <td>{{ event.event_name }}</td>
+                            <td>{{ event.location }}</td>
+                            <td>{{ event.event_date }}</td>
+                            <td>
+                                <a href="{% url 'edit_own_event' event.id %}"><button>Edit</button></a>
+                                <form action="{% url 'delete_own_event' event.id %}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                                    {% csrf_token %}
+                                    <button type="submit">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <a href="{% url 'post_event' %}" class="post-job">Post an Event</a>
+        </div>
+    </div>
+
+    <!-- JS Dependencies -->
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.4.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize AOS (for animations)
+            AOS.init({ once: true });
+            
+            // Add "loaded" class to body for animation triggering
+            document.body.classList.add("loaded");
+    
+            // Fade out flash message after 3 seconds
+            $('.flash-message').delay(3000).fadeOut(500);
+    
+            // Initialize DataTables for news, jobs, and events tables
+            const tables = ['#newsTable', '#jobsTable', '#eventsTable'];
+            tables.forEach(id => {
+                const table = $(id).DataTable({
+                    scrollX: true,               // Enable horizontal scrolling
+                    paging: true,                // Enable pagination
+                    ordering: true,              // Enable column sorting
+                    responsive: true,            // Make table responsive
+                    pageLength: 5,               // Default number of rows per page
+                    lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]],  // Options for rows per page
+                    dom: '<"top-toolbar"lB>rt<"bottom-toolbar"ip>',  // Custom layout
+                    buttons: [
+                        {
+                            extend: 'copy',
+                            text: '<i class="fas fa-copy"></i> Copy',
+                            className: 'btn-icon',
+                            exportOptions: {
+                                columns: id === '#newsTable' ? ':visible' : ':not(:last-child)' // Exclude last column for Jobs and Events
+                            }
+                        },
+                        {
+                            extend: 'excel',
+                            text: '<i class="fas fa-file-excel"></i> Excel',
+                            className: 'btn-icon',
+                            exportOptions: {
+                                columns: id === '#newsTable' ? ':visible' : ':not(:last-child)' // Exclude last column for Jobs and Events
+                            }
+                        },
+                        {
+                            extend: 'csv',
+                            text: '<i class="fas fa-file-csv"></i> CSV',
+                            className: 'btn-icon',
+                            exportOptions: {
+                                columns: id === '#newsTable' ? ':visible' : ':not(:last-child)' // Exclude last column for Jobs and Events
+                            }
+                        },
+                        {
+                            extend: 'pdf',
+                            text: '<i class="fas fa-file-pdf"></i> PDF',
+                            className: 'btn-icon',
+                            exportOptions: {
+                                columns: id === '#newsTable' ? ':visible' : ':not(:last-child)' // Exclude last column for Jobs and Events
+                            }
+                        }
+                    ],
+                    orderCellsTop: true,          // Make header row fixed on top
+                    fixedHeader: true,            // Enable fixed header for better scrolling experience
+                    initComplete: function () {
+                        const api = this.api();
+                        $(api.table().container()).find('thead tr.filters th').each(function (i) {
+                            $('input', this).on('keyup change', function () {
+                                api.column(i).search(this.value).draw();
+                            });
+                        });
+                    }
+                });
+            });
+    
+            // Initialize Typed.js for typing animation effect on the title
+            new Typed('.typing-title', {
+                strings: ["Alumni Dashboard"],
+                typeSpeed: 60,
+                backSpeed: 20,
+                startDelay: 300,
+                showCursor: false,
+            });
+        });
+    
+        // Function to toggle navigation menu visibility
+        function toggleNav() {
+            document.getElementById("nav-links").classList.toggle("active");
+        }
+    </script>    
+</body>
+</html>

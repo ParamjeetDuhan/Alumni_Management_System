@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Register</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        .required-star { color: red; margin-left: 3px; }
+        .error-message { color: red; font-size: 0.9em; display: none; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="logo">Alumni Information System</div>
+</header>
+
+<div class="form-container">
+    <h2>Register</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="flash-message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form id="registerForm" method="POST" action="{% url 'register' %}">
+        {% csrf_token %}
+
+        <div class="form-row dual">
+            <div>
+                <label for="roll_no">Roll No<span class="required-star">*</span></label>
+                <input type="text" name="roll_no" id="roll_no" required>
+                <div id="rollNoError" class="error-message">Roll number is required.</div>
+            </div>
+            <div>
+                <label for="email">Email<span class="required-star">*</span></label>
+                <input type="email" name="email" id="email" required>
+                <div id="emailError" class="error-message">Enter a valid email address.</div>
+            </div>
+        </div>
+
+        <div class="form-row dual">
+            <div>
+                <label for="password">Password<span class="required-star">*</span></label>
+                <div class="password-wrapper">
+                    <input type="password" name="password" id="password" required>
+                    <i class="fas fa-eye toggle-password" onclick="togglePassword('password')"></i>
+                </div>
+                <div id="passwordError" class="error-message">Password must be at least 8 characters, with uppercase, lowercase, number, and symbol.</div>
+            </div>
+            <div>
+                <label for="confirm_password">Confirm Password<span class="required-star">*</span></label>
+                <div class="password-wrapper">
+                    <input type="password" name="confirm_password" id="confirm_password" required>
+                    <i class="fas fa-eye toggle-password" onclick="togglePassword('confirm_password')"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row dual">
+            <div>
+                <label for="first_name">First Name<span class="required-star">*</span></label>
+                <input type="text" name="first_name" id="first_name" required>
+                <div id="firstNameError" class="error-message">First name is required.</div>
+            </div>
+            <div>
+                <label for="last_name">Last Name<span class="required-star">*</span></label>
+                <input type="text" name="last_name" id="last_name" required>
+                <div id="lastNameError" class="error-message">Last name is required.</div>
+            </div>
+        </div>
+
+        <div class="form-row dual">
+            <div>
+                <label for="gender">Gender<span class="required-star">*</span></label>
+                <select name="gender" id="gender" required>
+                    <option value="" disabled selected hidden>Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                    <option value="prefer_not_to_say">Prefer not to say</option>
+                </select>
+            </div>
+            <div>
+                <label for="graduation_year">Graduation Year<span class="required-star">*</span></label>
+                <input type="number" name="graduation_year" id="graduation_year" required>
+                <div id="graduationYearError" class="error-message">Enter a valid graduation year.</div>
+            </div>
+        </div>
+
+        <div class="form-row dual">
+            <div>
+                <label for="major">Major<span class="required-star">*</span></label>
+                <select name="major" id="major" required>
+                    <option value="" disabled selected>Select your major</option>
+                    <optgroup label="Undergraduate Programs (B.E. / B.Tech)">
+                        <option value="B.E. Computer Science and Engineering">B.E. Computer Science and Engineering</option>
+                        <option value="B.E. Electrical and Electronics Engineering">B.E. Electrical and Electronics Engineering</option>
+                        <option value="B.E. Electronics and Communication Engineering">B.E. Electronics and Communication Engineering</option>
+                        <option value="B.E. Mechanical Engineering">B.E. Mechanical Engineering</option>
+                        <option value="B.E. Aeronautical Engineering">B.E. Aeronautical Engineering</option>
+                        <option value="B.E. Civil Engineering">B.E. Civil Engineering</option>
+                        <option value="B.E. Mechatronics Engineering">B.E. Mechatronics Engineering</option>
+                        <option value="B.E. Automobile Engineering">B.E. Automobile Engineering</option>
+                        <option value="B.E. Electronics and Instrumentation Engineering">B.E. Electronics and Instrumentation Engineering</option>
+                        <option value="B.E. Biomedical Engineering">B.E. Biomedical Engineering</option>
+                        <option value="B.Tech Information Technology">B.Tech Information Technology</option>
+                        <option value="B.Tech Agricultural Engineering">B.Tech Agricultural Engineering</option>
+                        <option value="B.Tech Chemical Engineering">B.Tech Chemical Engineering</option>
+                        <option value="B.Tech Food Technology">B.Tech Food Technology</option>
+                        <option value="B.Tech Artificial Intelligence and Machine Learning">B.Tech Artificial Intelligence and Machine Learning</option>
+                        <option value="B.Tech Computer Science and Engineering (Cyber Security)">B.Tech Computer Science and Engineering (Cyber Security)</option>
+                    </optgroup>
+                    <optgroup label="Postgraduate Programs (M.E. / MBA / MCA)">
+                        <option value="M.E. Applied Electronics">M.E. Applied Electronics</option>
+                        <option value="M.E. Communication Systems">M.E. Communication Systems</option>
+                        <option value="M.E. Computer Science and Engineering">M.E. Computer Science and Engineering</option>
+                        <option value="M.E. CAD/CAM">M.E. CAD/CAM</option>
+                        <option value="M.E. Embedded Systems">M.E. Embedded Systems</option>
+                        <option value="M.E. VLSI Design">M.E. VLSI Design</option>
+                        <option value="M.E. Power Electronics and Drives">M.E. Power Electronics and Drives</option>
+                        <option value="MBA">Master of Business Administration (MBA)</option>
+                        <option value="MCA">Master of Computer Applications (MCA)</option>
+                    </optgroup>
+                </select>
+                <div id="majorError" class="error-message">Major is required.</div>
+            </div>            
+            <div>
+                <label for="phone">Phone<span class="required-star">*</span></label>
+                <input type="text" name="phone" id="phone" required>
+                <div id="phoneError" class="error-message">Enter a valid phone number.</div>
+            </div>
+        </div>
+
+        <div class="form-row dual">
+            <div>
+                <label for="location">Location<span class="required-star">*</span></label>
+                <input type="text" name="location" id="location">
+                <div id="firstNameError" class="error-message">Location is required.</div>
+            </div>
+            <div>
+                <label for="current_position">Current Position<span class="required-star">*</span></label>
+                <input type="text" name="current_position" id="current_position">
+                <div id="firstNameError" class="error-message">Current Position is required.</div>
+            </div>
+        </div>
+
+        <div class="form-row dual">
+            <div>
+                <label for="company">Company<span class="required-star">*</span></label>
+                <input type="text" name="company" id="company">
+                <div id="firstNameError" class="error-message">Company is required.</div>
+            </div>
+            <div></div>
+        </div>
+
+        <div class="form-row">
+            <label for="bio">Bio</label>
+            <textarea name="bio" id="bio" rows="3"></textarea>
+        </div>
+
+        <div class="form-row">
+            <button type="submit" class="submit-btn" onclick="return validateForm()">Register</button>
+        </div>
+    </form>
+
+    <p class="login-link">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+</div>
+
+<script>
+function togglePassword(id) {
+    const field = document.getElementById(id);
+    const icon = field.nextElementSibling;
+    field.type = field.type === 'password' ? 'text' : 'password';
+    icon.classList.toggle('fa-eye');
+    icon.classList.toggle('fa-eye-slash');
+}
+
+window.onload = function() {
+    document.querySelectorAll('.flash-message').forEach(msg => {
+        setTimeout(() => msg.style.opacity = '0', 4000);
+        setTimeout(() => msg.remove(), 5000);
+    });
+};
+
+function validateForm() {
+    let isValid = true;
+    clearErrors();
+
+    const fields = {
+        first_name: "First name is required.",
+        last_name: "Last name is required.",
+        email: "Enter a valid email address.",
+        password: "Password must be at least 8 characters, with uppercase, lowercase, number, and symbol.",
+        graduation_year: "Enter a valid graduation year.",
+        major: "Major is required.",
+        roll_no: "Roll number is required.",
+        phone: "Enter a valid phone number."
+    };
+
+    for (const [id, message] of Object.entries(fields)) {
+        const value = document.getElementById(id).value.trim();
+        if (value === "") {
+            document.getElementById(`${id}Error`).style.display = "block";
+            isValid = false;
+        }
+    }
+
+    const email = document.getElementById("email").value;
+    if (!validateEmail(email)) {
+        document.getElementById("emailError").style.display = "block";
+        isValid = false;
+    }
+
+    const password = document.getElementById("password").value;
+    if (!validatePassword(password)) {
+        document.getElementById("passwordError").style.display = "block";
+        isValid = false;
+    }
+
+    const phone = document.getElementById("phone").value;
+    if (!validatePhoneNumber(phone)) {
+        document.getElementById("phoneError").style.display = "block";
+        isValid = false;
+    }
+
+    const year = parseInt(document.getElementById("graduation_year").value);
+    const currentYear = new Date().getFullYear();
+    if (isNaN(year) || year < 1900 || year > currentYear) {
+        document.getElementById("graduationYearError").style.display = "block";
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+function clearErrors() {
+    document.querySelectorAll('.error-message').forEach(e => e.style.display = 'none');
+}
+
+function validateEmail(email) {
+    const re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    return re.test(email);
+}
+
+function validatePassword(password) {
+    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return re.test(password);
+}
+
+function validatePhoneNumber(phone) {
+    const re = /^[0-9\s\-\(\)]{7,15}$/;
+    return re.test(phone);
+}
+</script>
+
+</body>
+</html>

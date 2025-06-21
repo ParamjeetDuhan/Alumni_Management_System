@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{{ alumni.user.get_full_name }}'s Profile</title>
+    {% load static %}
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'css/my_profile.css' %}">
+    
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #eef1f7;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #1a1a2e;
+            padding: 20px 30px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 10px;
+            padding: 0;
+            margin: 0;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .profile-section {
+            background: white;
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+        table.dataTable {
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        table.dataTable thead th {
+            background-color: #1a1a2e;
+            color: white;
+            padding: 12px;
+        }
+        table.dataTable td {
+            padding: 12px;
+            color: #333;
+        }
+        table.dataTable thead input {
+            width: 100%;
+            padding: 6px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        div.dt-buttons .dt-button.btn-icon {
+            background-color: #16213e;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 4px;
+            margin-left: 8px;
+            transition: background-color 0.3s;
+        }
+
+        div.dt-buttons .dt-button.btn-icon:hover {
+            background-color: #ffcc00;
+            color: black;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background: #ddd;
+            margin: 40px 0;
+        }
+        .top-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .left-toolbar {
+            flex: 1;
+        }
+        .right-toolbar {
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+            }
+            .profile-card {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Alumni Information System</h1>
+    <nav>
+        <ul>
+            <li><a href="{% url 'my_profile' %}">My Profile</a></li>
+            <li><a href="{% url 'dashboard_alumni' %}">Dashboard</a></li>
+            <li><a href="{% url 'alumni_directory' %}">Alumni Directory</a></li>
+            <li><a href="{% url 'view_jobs' %}">View Jobs</a></li>
+            <li><a href="{% url 'view_events' %}">View Events</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="container">
+
+    {% if messages %}
+        <div id="flash-messages">
+            {% for message in messages %}
+                <div class="flash-message flash-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Profile Section -->
+    <section class="profile-section">
+        <h2>Alumni Information</h2>
+        <div class="profile-card">
+            <div class="profile-image">
+                <img src="{{ alumni.profile_picture.url }}" alt="Profile Picture" width="120" height="120" style="border-radius: 50%;">
+            </div>
+            <div class="profile-info">
+                <h2>{{ alumni.user.get_full_name }}</h2>
+                <div class="stats">
+                    <div class="stat"><strong>{{ job_count }}</strong><br>Jobs Posted</div>
+                    <div class="stat"><strong>{{ event_count }}</strong><br>Events Posted</div>
+                </div>
+                <div class="social-links">
+                    {% if alumni.linkedin %}<a href="{{ alumni.linkedin }}" target="_blank"><i class="fab fa-linkedin"></i></a>{% endif %}
+                    {% if alumni.x_twitter %}<a href="{{ alumni.x_twitter }}" target="_blank"><i class="fab fa-x-twitter"></i></a>{% endif %}
+                    {% if alumni.instagram %}<a href="{{ alumni.instagram }}" target="_blank"><i class="fab fa-instagram"></i></a>{% endif %}
+                    {% if alumni.facebook %}<a href="{{ alumni.facebook }}" target="_blank"><i class="fab fa-facebook"></i></a>{% endif %}
+                    {% if alumni.github %}<a href="{{ alumni.github }}" target="_blank"><i class="fab fa-github"></i></a>{% endif %}
+                    {% if alumni.website %}<a href="{{ alumni.website }}" target="_blank"><i class="fas fa-globe"></i></a>{% endif %}
+                </div> 
+            </div>
+        </div>
+
+        <table>
+            <thead><tr><th>Field</th><th>Information</th></tr></thead>
+            <tbody>
+                <tr><td>Roll No</td><td>{{ alumni.roll_no }}</td></tr>
+                <tr><td>First Name</td><td>{{ alumni.user.first_name }}</td></tr>
+                <tr><td>Last Name</td><td>{{ alumni.user.last_name }}</td></tr>
+                <tr><td>Gender</td><td>{{ alumni.gender }}</td></tr>
+                <tr><td>Email</td><td>{{ alumni.user.email }}</td></tr>
+                <tr><td>Graduation Year</td><td>{{ alumni.graduation_year }}</td></tr>
+                <tr><td>Major</td><td>{{ alumni.major }}</td></tr>
+                <tr><td>Location</td><td>{{ alumni.location }}</td></tr>
+                <tr><td>Current Position</td><td>{{ alumni.current_position }}</td></tr>
+                <tr><td>Company</td><td>{{ alumni.company }}</td></tr>
+                <tr><td>Bio</td><td>{{ alumni.bio }}</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+<hr>
+
+<!-- Jobs Posted -->
+<section>
+    <h2>Jobs Posted</h2>
+    {% if jobs %}
+        <table id="jobsTable" class="display nowrap" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Company</th>
+                    <th>Location</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                    <th><input type="text" placeholder="Search Title"></th>
+                    <th><input type="text" placeholder="Search Company"></th>
+                    <th><input type="text" placeholder="Search Location"></th>
+                    <th><input type="text" placeholder="Search Description"></th>
+                    <th><input type="text" placeholder="Search Date"></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                <tr>
+                    <td>{{ job.job_title }}</td>
+                    <td>{{ job.company }}</td>
+                    <td>{{ job.location }}</td>
+                    <td>{{ job.description }}</td>
+                    <td>{{ job.expiration_date|date:"d-m-Y" }}</td>
+                    <td>
+                        {% if job.registration_link %}
+                            <a href="{{ job.registration_link }}" target="_blank" class="apply-link">Apply</a>
+                        {% else %}
+                            <span class="disabled">-</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No jobs posted yet.</p>
+    {% endif %}
+</section>
+
+<hr>
+
+<!-- Events Created -->
+<section>
+    <h2>Events Created</h2>
+    {% if events %}
+        <table id="eventsTable" class="display nowrap" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Location</th>
+                    <th>Date</th>
+                </tr>
+                <tr>
+                    <th><input type="text" placeholder="Search Title"></th>
+                    <th><input type="text" placeholder="Search Description"></th>
+                    <th><input type="text" placeholder="Search Location"></th>
+                    <th><input type="text" placeholder="Search Date"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in events %}
+                <tr>
+                    <td>{{ event.event_name }}</td>
+                    <td>{{ event.event_description }}</td>
+                    <td>{{ event.location }}</td>
+                    <td>{{ event.event_date|date:"d-m-Y" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No events created yet.</p>
+    {% endif %}
+</section>
+
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+
+<!-- DataTables Initialization -->
+<script>
+$(document).ready(function () {
+    function initTable(id) {
+        var isJobsTable = (id === 'jobsTable');
+
+        var table = $(`#${id}`).DataTable({
+            responsive: true,
+            orderCellsTop: true,
+            fixedHeader: true,
+            pageLength: 5,
+            lengthMenu: [5, 10, 25, 50],
+            dom: '<"top-toolbar d-flex justify-content-between"<"left-toolbar"l><"right-toolbar"B>>rt<"bottom-toolbar"ip>',
+            buttons: [
+                {
+                    extend: 'copyHtml5',
+                    text: '<i class="fas fa-copy"></i> Copy',
+                    className: 'btn-icon',
+                    exportOptions: {
+                        format: {
+                            body: function (data, row, column, node) {
+                                if (isJobsTable && column === 5) { // 6th column (registration link)
+                                    var link = $(node).find('a').attr('href');
+                                    return link ? link : '-';
+                                }
+                                return data;
+                            }
+                        }
+                    }
+                },
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fas fa-file-excel"></i> Excel',
+                    className: 'btn-icon',
+                    exportOptions: {
+                        format: {
+                            body: function (data, row, column, node) {
+                                if (isJobsTable && column === 5) {
+                                    var link = $(node).find('a').attr('href');
+                                    return link ? link : '-';
+                                }
+                                return data;
+                            }
+                        }
+                    }
+                },
+                {
+                    extend: 'csvHtml5',
+                    text: '<i class="fas fa-file-csv"></i> CSV',
+                    className: 'btn-icon',
+                    exportOptions: {
+                        format: {
+                            body: function (data, row, column, node) {
+                                if (isJobsTable && column === 5) {
+                                    var link = $(node).find('a').attr('href');
+                                    return link ? link : '-';
+                                }
+                                return data;
+                            }
+                        }
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fas fa-file-pdf"></i> PDF',
+                    className: 'btn-icon',
+                    exportOptions: {
+                        format: {
+                            body: function (data, row, column, node) {
+                                if (isJobsTable && column === 5) {
+                                    var link = $(node).find('a').attr('href');
+                                    return link ? link : '-';
+                                }
+                                return data;
+                            }
+                        }
+                    }
+                }
+            ]
+        });
+
+        $(`#${id} thead input`).on('keyup change', function () {
+            let index = $(this).parent().index();
+            table.column(index).search(this.value).draw();
+        });
+    }
+    setTimeout(function () {
+        document.querySelectorAll('.flash-message').forEach(msg => {
+            msg.style.transition = 'opacity 1s';
+            msg.style.opacity = 0;
+            setTimeout(() => msg.remove(), 1000);
+        });
+    }, 5000);
+    initTable('jobsTable');
+    initTable('eventsTable');
+});
+</script>
+
+</body>
+</html>

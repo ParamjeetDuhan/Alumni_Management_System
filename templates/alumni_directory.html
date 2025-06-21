@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Alumni Directory</title>
+    {% load static %}
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="{% static 'css/my_profile.css' %}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #eef1f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #1a1a2e;
+            padding: 20px 30px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 5px;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .content-box {
+            background: white;
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            font-size: 26px;
+            color: #1a1a2e;
+        }
+
+        p {
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        table.dataTable {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+
+        table.dataTable thead th {
+            background-color: #1a1a2e;
+            color: #fff;
+            padding: 14px;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        table.dataTable tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table.dataTable tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        table.dataTable td {
+            padding: 14px;
+            color: #333;
+        }
+
+        table.dataTable thead input {
+            width: 100%;
+            padding: 8px 10px;
+            margin-top: 6px;
+            box-sizing: border-box;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            transition: 0.3s ease-in-out;
+        }
+
+        table.dataTable thead input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 3px #007bff80;
+        }
+
+        .alumni-link {
+            color: #1a1a2e;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .alumni-link:hover {
+            text-decoration: underline;
+            color: #007bff;
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            table.dataTable thead input {
+                font-size: 14px;
+            }
+
+            .content-box {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Alumni Information System</h1>
+    <nav>
+        <ul>
+            <li><a href="{% url 'my_profile' %}">My Profile</a></li>
+            <li><a href="{% url 'dashboard_alumni' %}">Dashboard</a></li>
+            <li><a href="{% url 'alumni_directory' %}">Alumni Directory</a></li>
+            <li><a href="{% url 'view_jobs' %}">View Jobs</a></li>
+            <li><a href="{% url 'view_events' %}">View Events</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="container">
+    {% if messages %}
+    <div id="flash-messages">
+        {% for message in messages %}
+            <div class="flash-message flash-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="content-box">
+        <h2>Alumni Directory</h2>
+        <p>You can access an alumni's profile by clicking on their name below.</p>
+
+        <table id="alumni-table" class="display">
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Full Name</th>
+                    <th>Graduation Year</th>
+                    <th>Major</th>
+                    <th>Location</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th><input type="text" placeholder="Search Full Name" /></th>
+                    <th><input type="text" placeholder="Search Year" /></th>
+                    <th><input type="text" placeholder="Search Major" /></th>
+                    <th><input type="text" placeholder="Search Location" /></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alum in all_alumni %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td><a class="alumni-link" href="{% url 'view_alumni_profile' alum.id %}">{{ alum.user.get_full_name }}</a></td>
+                    <td>{{ alum.graduation_year }}</td>
+                    <td>{{ alum.major }}</td>
+                    <td>{{ alum.location }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var table = $('#alumni-table').DataTable({
+            dom: 'lrtip',
+            orderCellsTop: true,
+            fixedHeader: true,
+            pageLength: 5,
+            lengthMenu: [5, 10, 25, 50, 100],
+        });
+
+        $('#alumni-table thead input').on('keyup change', function () {
+            const index = $(this).parent().index();
+            table.column(index).search(this.value).draw();
+        });
+    });
+</script>
+
+</body>
+</html>

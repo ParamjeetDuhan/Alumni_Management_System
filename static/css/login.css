@@ -1,0 +1,152 @@
+/* Reset and base styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to right, #2c3e50, #3498db);
+    color: #fff;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Container */
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+/* Card */
+.login-card {
+    background: #fff;
+    color: #333;
+    padding: 30px 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    text-align: center;
+}
+
+/* Header */
+.login-header h2 {
+    font-size: 26px;
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+.login-header p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Input styles */
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+.form-group p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+    color: #444;
+}
+.input-icon {
+    position: relative;
+}
+.input-icon i.fa-envelope,
+.input-icon i.fa-lock {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+}
+.input-icon input {
+    width: 100%;
+    padding: 10px 40px 10px 35px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 15px;
+    transition: all 0.3s;
+}
+.input-icon input:focus {
+    border-color: #3498db;
+}
+
+/* Password toggle */
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #aaa;
+    font-size: 16px;
+}
+.toggle-password:hover {
+    color: #3498db;
+}
+
+/* Button */
+.login-button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: #3498db;
+    color: white;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.login-button:hover {
+    background: #2980b9;
+}
+
+/* Flash messages */
+.flash-messages {
+    margin-bottom: 15px;
+}
+.flash-message {
+    background-color: #e74c3c;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+.flash-success {
+    background-color: #2ecc71;
+}
+
+/* Register link */
+.register-link {
+    font-size: 14px;
+    margin-top: 15px;
+}
+.register-link a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: bold;
+}
+.register-link a:hover {
+    text-decoration: underline;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

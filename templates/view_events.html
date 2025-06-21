@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View All Events</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/dashboard_alumni.css' %}">
+
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.0/css/responsive.dataTables.min.css">
+
+    <!-- jQuery and DataTables scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.4.0/js/dataTables.responsive.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Alumni Information System</h1>
+        <div class="nav-toggle" onclick="toggleNav()">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <nav>
+            <ul id="nav-links">
+                <li><a href="{% url 'my_profile' %}">My Profile</a></li>
+                <li><a href="{% url 'dashboard_alumni' %}">Dashboard</a></li>
+                <li><a href="{% url 'alumni_directory' %}">Alumni Directory</a></li>
+                <li><a href="{% url 'view_jobs' %}">View Jobs</a></li>
+                <li><a href="{% url 'view_events' %}">View Events</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>All Alumni Events</h2>
+
+        <!-- Flash message -->
+        {% if messages %}
+        <div class="flash-message" id="flash-message">
+            {% for message in messages %}
+                <div class="flash-message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="table-responsive">
+            <table id="eventsTable" class="display nowrap" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Event Name</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Location</th>
+                        <th>Posted By</th>
+                    </tr>
+                    <tr class="filters">
+                        <th><input type="text" placeholder="Search Name"></th>
+                        <th><input type="text" placeholder="Search Description"></th>
+                        <th><input type="text" placeholder="Search Date"></th>
+                        <th><input type="text" placeholder="Search Location"></th>
+                        <th><input type="text" placeholder="Search Posted by"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for event in all_events %}
+                    <tr>
+                        <td>{{ event.event_name }}</td>
+                        <td>{{ event.event_description }}</td>
+                        <td>{{ event.event_date }}</td>
+                        <td>{{ event.location }}</td>
+                        <td>{{ event.created_by.get_full_name|default:event.created_by.username }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <a class="post-job" href="{% url 'dashboard_alumni' %}">Back to Dashboard</a>
+    </div>
+
+    <script>
+        function toggleNav() {
+            document.getElementById("nav-links").classList.toggle("show");
+        }
+
+        $(document).ready(function () {
+            const table = $('#eventsTable').DataTable({
+                scrollX: true,
+                paging: true,
+                ordering: true,
+                autoWidth: false,
+                responsive: false,
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+                dom: '<"top-toolbar d-flex justify-content-between"<"dt-length-left"l><"dt-buttons-right"B>>rt<"bottom-toolbar d-flex justify-content-between"ip>',
+                buttons: [
+                    { extend: 'copy', text: '<i class="fas fa-copy"></i> Copy', className: 'btn-icon' },
+                    { extend: 'excel', text: '<i class="fas fa-file-excel"></i> Excel', className: 'btn-icon' },
+                    { extend: 'csv', text: '<i class="fas fa-file-csv"></i> CSV', className: 'btn-icon' },
+                    { extend: 'pdf', text: '<i class="fas fa-file-pdf"></i> PDF', className: 'btn-icon' }
+                ],
+                orderCellsTop: true,
+                fixedHeader: true,
+                initComplete: function () {
+                    const api = this.api();
+                    api.columns().every(function (colIdx) {
+                        $('input', $('.filters th')[colIdx]).on('input', function () {
+                            api.column(colIdx).search(this.value).draw();
+                        });
+                    });
+                }
+            });
+
+            setTimeout(() => {
+                const flashMessage = document.getElementById('flash-message');
+                if (flashMessage) {
+                    flashMessage.style.display = 'none';
+                }
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

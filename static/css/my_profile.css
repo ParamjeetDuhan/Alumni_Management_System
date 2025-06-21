@@ -1,0 +1,421 @@
+/* ===== Reset & Base ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6fa;
+    color: #2d2d2d;
+    line-height: 1.6;
+}
+
+/* ===== Header Navigation ===== */
+header {
+    background: linear-gradient(90deg, #1a1a2e, #16213e);
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+header h1 {
+    font-size: 1.6rem;
+    color: white;
+}
+
+/* ===== Navigation ===== */
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.nav-toggle div {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    margin: 4px 0;
+    transition: all 0.3s ease;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 5px;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav a {
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+nav a:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* ===== Mobile Navigation Toggle ===== */
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.nav-toggle div {
+    background-color: white;
+    height: 3px;
+    width: 25px;
+}
+
+@media (max-width: 768px) {
+    .nav-toggle {
+        display: flex;
+    }
+
+    #nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        padding: 1rem;
+        background-color: #1a1a2e;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    #nav-links.show {
+        display: flex;
+    }
+}
+
+/* ===== Container ===== */
+.container {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* ===== Flash Messages ===== */
+#flash-messages {
+    margin-bottom: 1.5rem;
+}
+
+.flash-message {
+    padding: 1rem;
+    border-radius: 8px;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.flash-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.flash-error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.flash-info {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+/* ===== DataTables Custom Styling ===== */
+.dataTables_wrapper {
+    margin-top: 20px;
+    background-color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    overflow-x: auto;
+}
+
+table.dataTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+table.dataTable thead th {
+    background-color: #1a1a2e;
+    color: white;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+}
+
+table.dataTable td, 
+table.dataTable th {
+    padding: 12px;
+    text-align: left;
+    font-size: 15px;
+    color: #333;
+    border-bottom: 1px solid #eaeaea;
+}
+
+table.dataTable tbody tr:hover {
+    background-color: #f0f0f0;
+}
+
+/* ===== Directory Link Style ===== */
+.alumni-link {
+    color: #1a1a2e;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.alumni-link:hover {
+    text-decoration: underline;
+    color: #0f3460;
+}
+
+/* ===== Section Title ===== */
+section h2 {
+    font-size: 1.6rem;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+}
+
+section p {
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+/* ===== Responsive Tables ===== */
+@media (max-width: 768px) {
+    table.dataTable,
+    .dataTables_wrapper {
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+    }
+}
+
+/* ===== Profile Section ===== */
+.profile-card {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: center;
+    background: white;
+    padding: 1.8rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+}
+
+.profile-image {
+    flex-shrink: 0;
+}
+
+.profile-pic {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 5px solid #1a1a2e;
+    transition: transform 0.3s ease;
+}
+
+.profile-pic:hover {
+    transform: scale(1.05);
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-info h2 {
+    font-size: 1.9rem;
+    margin-bottom: 0.5rem;
+    color: #1a1a2e;
+}
+
+.upload-instruction {
+    font-size: 0.85rem;
+    color: #999;
+    margin-top: 8px;
+    text-align: center;
+}
+
+.stats {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat strong {
+    display: block;
+    font-size: 1.6rem;
+    color: #182b69;
+}
+
+.stat span {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+/* ===== Tables ===== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2.5rem;
+}
+
+th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background-color: #1a1a2e;
+    color: white;
+    font-weight: 600;
+}
+
+tr:hover td {
+    background-color: #f7f7f7;
+}
+
+td[contenteditable="true"] {
+    background-color: #fefefe;
+    cursor: text;
+}
+
+td.editing {
+    outline: 2px dashed #e94560;
+    background-color: #fff3f5;
+}
+
+.inline-dropdown {
+    font-size: 14px;
+    padding: 6px 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* ===== Notes and Buttons ===== */
+.note {
+    font-size: 0.9rem;
+    color: #777;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.change-password-container {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.change-password-btn {
+    background-color: #1a1a2e;
+    color: white;
+    padding: 0.8rem 1.6rem;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.change-password-btn:hover {
+    background-color: #0f3460;
+}
+
+/* ===== Alumni Directory List ===== */
+.alumni-directory {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 1rem;
+}
+
+.alumni-directory li {
+    padding: 0.9rem 1.2rem;
+    background-color: #fff;
+    margin-bottom: 0.8rem;
+    border-left: 4px solid #1a1a2e;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    transition: background-color 0.2s ease;
+}
+
+.alumni-directory li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+.alumni-directory li:hover {
+    background-color: #f0f0ff;
+}
+
+/* Apply Link Styles */
+a.apply-link {
+    color: #4CAF50; /* Green for active link */
+    text-decoration: none;
+    font-weight: bold;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+a.apply-link:hover {
+    background-color: #45a049; /* Darker green on hover */
+    color: white;
+}
+/* Disabled Link Style */
+span.disabled {
+    color: #aaa; /* Gray for disabled state */
+    font-style: italic;
+    padding: 8px 12px;
+    border-radius: 4px;
+}
+
+/* ===== Divider ===== */
+hr {
+    margin: 2rem 0;
+    border: none;
+    border-top: 1px solid #ccc;
+}
+
+.social-links {
+    margin-top: 15px;
+    font-size: 22px;
+}
+.social-links a {
+    margin: 0 8px;
+    color: #333;
+    font-size: 1.5em;
+    transition: color 0.3s;
+    text-decoration: none;
+}
+
+.social-links a:hover {
+    color: #0077b5; /* LinkedIn Blue or anything you like */
+}
