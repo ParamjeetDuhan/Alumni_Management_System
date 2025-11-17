@@ -98,12 +98,7 @@ alumni_information_system/
 
 ---
 
- 👨‍💻 Author
-
-RAVINTHRA A  
-MCA Student, Hindusthan College of Engineering and Technology  
-https://github.com/Ravinthra
-
+ 
 ---
 
  📜 License
