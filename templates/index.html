@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Alumni Information System</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <!-- AOS CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"/>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    :root {
+      --bg-color: #f0f4f8;
+      --text-color: #333;
+      --card-bg: white;
+      --accent: #00d8ff;
+    }
+
+    body.dark-theme {
+      --bg-color: #1e1e2f;
+      --text-color: #f0f4f8;
+      --card-bg: #2c2c3e;
+    }
+
+    header {
+      background-color: #1e1e2f;
+      color: white;
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.7rem;
+      font-weight: bold;
+    }
+
+    .nav-links a {
+      margin-left: 1rem;
+      color: #fff;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    .theme-toggle {
+      margin-left: 1rem;
+      font-size: 1.3rem;
+      cursor: pointer;
+    }
+
+    .hero {
+      height: 100vh;
+      background: #1e1e2f;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .hero-content {
+      z-index: 2;
+      color: white;
+    }
+
+    .hero h1 { font-size: 3rem; margin-bottom: 1rem; }
+    .hero p { font-size: 1.2rem; margin-bottom: 2rem; }
+
+    .cta-button {
+      background-color: var(--accent);
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .cta-button:hover { background-color: #00bcd4; }
+
+    .typing-text {
+      color: var(--accent);
+      font-weight: bold;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 3px solid white;
+      width: 100%;
+      font-size: 2rem;
+      margin-top: 1rem;
+    }
+
+    section {
+      padding: 4rem 2rem;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .features, .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+    }
+
+    .features a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .features a:hover { transform: scale(1.03); }
+
+    .feature-box {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+      text-align: center;
+      transition: transform 0.3s, background 0.3s;
+    }
+
+    .feature-box:hover { transform: translateY(-5px); }
+
+    .feature-box i {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--accent);
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      color: #00bcd4;
+    }
+
+    footer {
+      background-color: #1e1e2f;
+      color: white;
+      padding: 2rem;
+    }
+
+    .footer-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+
+    .footer-col {
+      flex: 1 1 200px;
+    }
+
+    .footer-col h4 {
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+      color: var(--accent);
+    }
+
+    .footer-col ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .footer-col ul li {
+      margin: 0.5rem 0;
+    }
+
+    .footer-col ul li a {
+      color: #ddd;
+      text-decoration: none;
+    }
+
+    .footer-col ul li a:hover {
+      text-decoration: underline;
+    }
+
+    .social-links {
+      margin-top: 1rem;
+    }
+
+    .social-links a {
+      color: white;
+      margin-right: 1rem;
+      font-size: 1.2rem;
+      transition: color 0.3s;
+    }
+
+    .social-links a:hover {
+      color: var(--accent);
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2rem; }
+      .typing-text { font-size: 1.3rem; }
+
+      .footer-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .footer-col {
+        text-align: center;
+      }
+
+      .social-icons {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo">Alumni Information System</div>
+      <div class="nav-links">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="#features">Features</a>
+        <a href="#stats">Stats</a>
+        <a href="#contact">Contact</a>
+        <a href="{% url 'login' %}">Login</a>
+        <i class="fas fa-moon theme-toggle" id="themeToggle" title="Toggle Theme"></i>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div id="particles-js"></div>
+    <div class="hero-content" data-aos="fade-up">
+      <h1>Welcome Alumni</h1>
+      <div class="typing-text" id="typed"></div>
+      <p>Reconnect, collaborate, and grow together</p>
+      <a href="{% url 'register' %}" class="cta-button">Join Now</a>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features">
+    <h2 class="section-title" data-aos="fade-up">System Features</h2>
+    <div class="features">
+      {% if not user.is_authenticated %}
+        <a href="{% url 'login' %}" class="feature-box" data-aos="zoom-in"><i class="fas fa-users"></i><h3>Alumni Directory</h3><p>Browse profiles, search by graduation year or major, and build your professional network.</p></a>
+        <a href="{% url 'login' %}" class="feature-box" data-aos="zoom-in"><i class="fas fa-calendar-check"></i><h3>Event Management</h3><p>Organize reunions, workshops, or join alumni events with our easy-to-use platform.</p></a>
+        <a href="{% url 'login' %}" class="feature-box" data-aos="zoom-in"><i class="fas fa-briefcase"></i><h3>Career Center</h3><p>Post and explore job opportunities, get career advice, and connect with recruiters.</p></a>
+        <a href="{% url 'login' %}" class="feature-box" data-aos="zoom-in"><i class="fas fa-newspaper"></i><h3>News Updates</h3><p>Stay connected with alumni news, achievements, and milestones.</p></a>
+      {% else %}
+        <div class="feature-box" data-aos="zoom-in"><i class="fas fa-users"></i><h3>Alumni Directory</h3><p>Browse profiles, search by graduation year or major, and build your professional network.</p></div>
+        <div class="feature-box" data-aos="zoom-in"><i class="fas fa-calendar-check"></i><h3>Event Management</h3><p>Organize reunions, workshops, or join alumni events with our easy-to-use platform.</p></div>
+        <div class="feature-box" data-aos="zoom-in"><i class="fas fa-briefcase"></i><h3>Career Center</h3><p>Post and explore job opportunities, get career advice, and connect with recruiters.</p></div>
+        <div class="feature-box" data-aos="zoom-in"><i class="fas fa-newspaper"></i><h3>News Updates</h3><p>Stay connected with alumni news, achievements, and milestones.</p></div>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section id="stats">
+    <h2 class="section-title" data-aos="fade-up">📊 Alumni Stats</h2>
+    <div class="features stats">
+      <div class="feature-box" data-aos="fade-up"><h3><span class="stat-number" id="alumniCount">0</span>+</h3><p>Total Alumni Registered</p></div>
+      <div class="feature-box" data-aos="fade-up"><h3><span class="stat-number" id="companies">0</span>+</h3><p>Companies Connected</p></div>
+      <div class="feature-box" data-aos="fade-up"><h3><span class="stat-number" id="events">0</span></h3><p>Events Organized</p></div>
+      <div class="feature-box" data-aos="fade-up"><h3><span class="stat-number" id="jobs">0</span></h3><p>Jobs Posted</p></div>
+    </div>
+  </section>
+
+   <!-- Footer Section -->
+   <footer id="contact">
+    <div class="container">
+      <div class="footer-container">
+        <div class="footer-col">
+          <h4>Alumni Information System</h4>
+          <p>Empowering lifelong connections between alumni and their alma mater.</p>
+          <div class="social-links">
+            <a href="https://www.facebook.com/hicethindusthan"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://x.com/hindusthanhicet"><i class="fab fa-x-twitter"></i></a>
+            <a href="https://www.linkedin.com/school/hicet"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://www.instagram.com/hindusthan.hicet"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.youtube.com/@hindusthancollege"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#stats">Statistics</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'register' %}">Register</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact Us</h4>
+          <ul>
+            <li><i class="fas fa-envelope"></i> principal@hicet.ac.in</li>
+            <li><i class="fas fa-phone"></i> (123) 456-7890</li>
+            <li><i class="fas fa-map-marker-alt"></i> Gl bajaj institute of Technology & Management ,Greater Noida, Uttarpardesh, INDIA.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Alumni Information Sysytem. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <script>
+    AOS.init({ duration: 1000 });
+
+    new Typed('#typed', {
+      strings: ['Your alumni journey starts here.', 'Connect. Share. Grow.', 'Empowering lifelong connections.'],
+      typeSpeed: 50,
+      backSpeed: 25,
+      backDelay: 2000,
+      loop: true
+    });
+
+    particlesJS("particles-js", {
+      particles: {
+        number: { value: 60 },
+        color: { value: "#00d8ff" },
+        shape: { type: "circle" },
+        opacity: { value: 0.5 },
+        size: { value: 3 },
+        line_linked: {
+          enable: true,
+          distance: 150,
+          color: "#00d8ff",
+          opacity: 0.4,
+          width: 1
+        },
+        move: { enable: true, speed: 2 }
+      },
+      interactivity: {
+        events: { onhover: { enable: true, mode: "repulse" } }
+      }
+    });
+
+    function animateValue(id, end, duration) {
+      let current = 0;
+      const step = Math.ceil(end / (duration / 50));
+      const el = document.getElementById(id);
+      const counter = setInterval(() => {
+        current += step;
+        if (current >= end) {
+          el.textContent = end;
+          clearInterval(counter);
+        } else {
+          el.textContent = current;
+        }
+      }, 50);
+    }
+
+    async function fetchStats() {
+      try {
+        const res = await fetch('/api/stats/');
+        const data = await res.json();
+        animateValue("alumniCount", data.alumniCount, 1500);
+        animateValue("companies", data.companies, 1200);
+        animateValue("events", data.events, 800);
+        animateValue("jobs", data.jobs, 800);
+      } catch (err) {
+        console.error("Failed to fetch stats:", err);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      fetchStats();
+
+      const themeToggle = document.getElementById("themeToggle");
+      const prefersDark = localStorage.getItem("theme") === "dark";
+      if (prefersDark) document.body.classList.add("dark-theme");
+
+      themeToggle.addEventListener("click", () => {
+        document.body.classList.toggle("dark-theme");
+        localStorage.setItem("theme", document.body.classList.contains("dark-theme") ? "dark" : "light");
+        themeToggle.classList.toggle("fa-sun");
+        themeToggle.classList.toggle("fa-moon");
+      });
+
+      themeToggle.classList.toggle("fa-sun", document.body.classList.contains("dark-theme"));
+      themeToggle.classList.toggle("fa-moon", !document.body.classList.contains("dark-theme"));
+    });
+  </script>
+</body>
+</html>
+
+

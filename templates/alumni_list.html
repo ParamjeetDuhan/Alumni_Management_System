@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumni List</title>
+    {% load static %}
+
+    <link rel="stylesheet" href="{% static 'css/alumni_list.css' %}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+</head>
+<body>
+<header>
+    <h1>Alumni Information System</h1>
+    <nav>
+        <ul>
+            <li><a href="{% url 'dashboard_admin' %}">Dashboard</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="container">
+    <h2 class="center-heading">List of Alumni</h2>
+
+    {% if messages %}
+        <div class="flash-messages">
+            {% for message in messages %}
+                <div class="flash-message flash-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data" action="{% url 'import_alumni' %}" class="upload-form">
+        {% csrf_token %}
+        <input type="file" name="file" accept=".csv,.xlsx" required>
+        <button type="submit">Upload Alumni List</button>
+        {% load static %}
+    </form>
+
+    <div class="download-link-wrapper">
+        <a href="{% static 'files/alumni_import_template.xlsx' %}" class="download-link"><i class="fas fa-download"></i>Download Alumni Import Template</a>
+    </div>
+     
+    <!-- Control Buttons Row -->
+    <div class="control-buttons-row">
+        <div class="left-controls">
+            <button id="undoBtn" class="btn-action"><i class="fas fa-undo"></i> Undo</button>
+            <button id="redoBtn" class="btn-action"><i class="fas fa-redo"></i> Redo</button>
+        </div>
+    
+        <form method="POST" action="{% url 'bulk_remove_alumni' %}" id="bulkRemoveForm" class="right-controls">
+            {% csrf_token %}
+            <input type="hidden" name="selected_alumni" id="selected-alumni-hidden">
+            <button type="submit" class="btn-remove" onclick="return confirm('Remove selected alumni?')">
+                <i class="fa fa-trash"></i> Remove Selected
+            </button>
+        </form>
+    </div>    
+
+    <!-- Alumni Table -->
+    <div class="table-container">
+        <table id="alumniTable" class="display nowrap" style="width:100%">
+            <thead>
+            <tr>
+                <th><input type="checkbox" id="select-all"></th>
+                <th>S.No</th>
+                <th>Roll No</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Email</th>
+                <th>Graduation Year</th>
+                <th>Major</th>
+                <th>Phone</th>
+                <th>Location</th>
+                <th>Current Position</th>
+                <th>Company</th>
+                <th>Approval Status</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+            <tr class="filters">
+                <th></th><th></th>
+                <th><input type="text" placeholder="Roll No" /></th>
+                <th><input type="text" placeholder="Name" /></th>
+                <th><input type="text" placeholder="Gender" /></th>
+                <th><input type="text" placeholder="Email" /></th>
+                <th><input type="text" placeholder="Year" /></th>
+                <th><input type="text" placeholder="Major" /></th>
+                <th><input type="text" placeholder="Phone" /></th>
+                <th><input type="text" placeholder="Location" /></th>
+                <th><input type="text" placeholder="Position" /></th>
+                <th><input type="text" placeholder="Company" /></th>
+                <th><input type="text" placeholder="Status" /></th>
+                <th><input type="text" placeholder="Date" /></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for alumni in alumni_list %}
+                <tr data-id="{{ alumni.id }}">
+                    <td><input type="checkbox" class="alumni-checkbox" value="{{ alumni.id }}"></td>
+                    <td>{{ forloop.counter }}
+                        <a href="{% url 'view_alumni_profiles' alumni.id %}" class="btn btn-sm btn-primary" title="View Profile">
+                            <i class="fas fa-user"></i> <!-- FontAwesome user icon -->
+                        </a>
+                    </td>
+                    <td contenteditable="true" class="editable" data-field="roll_no">{{ alumni.roll_no }}</td>
+                    <td contenteditable="true" class="editable" data-field="name">{{ alumni.user.first_name }} {{ alumni.user.last_name }}</td>
+                    <td contenteditable="true" class="editable" data-field="gender">{{ alumni.gender }}</td>
+                    <td contenteditable="true" class="editable" data-field="email">{{ alumni.user.email }}</td>
+                    <td contenteditable="true" class="editable" data-field="graduation_year">{{ alumni.graduation_year }}</td>
+                    <td contenteditable="true" class="editable" data-field="major">{{ alumni.major }}</td>
+                    <td contenteditable="true" class="editable" data-field="phone">{{ alumni.phone }}</td>
+                    <td contenteditable="true" class="editable" data-field="location">{{ alumni.location }}</td>
+                    <td contenteditable="true" class="editable" data-field="current_position">{{ alumni.current_position }}</td>
+                    <td contenteditable="true" class="editable" data-field="company">{{ alumni.company }}</td>
+                    <td>{% if alumni.user.approval_status %}Approved{% else %}Pending{% endif %}</td>
+                    <td>{{ alumni.user.date_joined }}</td>
+                    <td>
+                        <form action="{% url 'remove_alumni' alumni.id %}" method="POST" onsubmit="return confirm('Are you sure?')">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-remove">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        const table = $('#alumniTable').DataTable({
+            scrollX: true,
+            paging: true,
+            ordering: true,
+            autoWidth: false,
+            responsive: false,
+            pageLength: 10,
+            lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+            dom: '<"top-toolbar"B>lrt<"bottom-toolbar"ip>',
+            buttons: [
+                {
+                    extend: 'copy',
+                    text: '<i class="fas fa-copy"></i> Copy',
+                    className: 'btn-icon',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'excel',
+                    text: '<i class="fas fa-file-excel"></i> Excel',
+                    className: 'btn-icon',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'csv',
+                    text: '<i class="fas fa-file-csv"></i> CSV',
+                    className: 'btn-icon',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fas fa-file-pdf"></i> PDF',
+                    className: 'btn-icon',
+                    orientation: 'landscape',
+                    pageSize: 'A4',
+                    exportOptions: {
+                        columns: function (idx, data, node) {
+                            const totalColumns = $('#alumniTable').DataTable().columns().nodes().length;
+                            return idx !== 0 && idx !== totalColumns - 1; // Exclude checkbox and last column
+                        }
+                    },
+                    customize: function (doc) {
+                        doc.defaultStyle.fontSize = 7;
+                        doc.styles.tableHeader.fontSize = 8;
+                        doc.styles.tableHeader.alignment = 'left';
+                
+                        if (doc.content && doc.content[1] && doc.content[1].table) {
+                            const colCount = doc.content[1].table.body[0].length;
+                            doc.content[1].table.widths = Array(colCount).fill('auto');
+                        }
+                
+                        doc.content[1].layout = {
+                            paddingLeft: () => 1,
+                            paddingRight: () => 1,
+                            paddingTop: () => 1,
+                            paddingBottom: () => 1
+                        };
+                
+                        doc.pageMargins = [10, 10, 10, 10];
+                    }
+                }
+            ],
+
+            orderCellsTop: true,
+            fixedHeader: true,
+            initComplete: function () {
+                let api = this.api();
+                api.columns().eq(0).each(function (colIdx) {
+                    $('input', $('.filters th').eq(colIdx)).on('keyup change clear', function () {
+                        if (api.column(colIdx).search() !== this.value) {
+                            api.column(colIdx).search(this.value).draw();
+                        }
+                    });
+                });
+            }
+        });
+
+        let historyStack = [];
+        let redoStack = [];
+
+        function pushToHistory(id, field, oldValue, newValue) {
+            historyStack.push({ id, field, oldValue, newValue });
+            redoStack = []; // Clear redo stack on new edit
+        }
+
+        function applyEdit(entry, reverse = false) {
+            const row = $(`tr[data-id="${entry.id}"]`);
+            const cell = row.find(`[data-field="${entry.field}"]`);
+            const valueToApply = reverse ? entry.oldValue : entry.newValue;
+
+            $.ajax({
+                url: '{% url "update_alumni_field" %}',
+                type: 'POST',
+                data: {
+                    id: entry.id,
+                    field: entry.field,
+                    value: valueToApply,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').first().val()
+                },
+                success: function (response) {
+                    if (response.success) {
+                        cell.text(valueToApply);
+                    } else {
+                        alert('Undo/Redo failed: ' + (response.error || 'Unknown error'));
+                    }
+                },
+                error: function () {
+                    alert('Server error during undo/redo.');
+                }
+            });
+        }
+
+        $('#undoBtn').on('click', function () {
+            const lastAction = historyStack.pop();
+            if (lastAction) {
+                applyEdit(lastAction, true);
+                redoStack.push(lastAction);
+            }
+        });
+
+        $('#redoBtn').on('click', function () {
+            const nextAction = redoStack.pop();
+            if (nextAction) {
+                applyEdit(nextAction, false);
+                historyStack.push(nextAction);
+            }
+        });
+
+        // Inline editing logic
+        $(document).on('click', '.editable', function () {
+            const currentElement = $(this);
+            if (currentElement.find('input').length > 0) return;
+
+            const originalValue = currentElement.text().trim();
+            const field = currentElement.data('field');
+            const id = currentElement.closest('tr').data('id');
+
+            const input = $('<input>', {
+                type: 'text',
+                value: originalValue,
+                blur: function () {
+                    const newValue = $(this).val().trim();
+                    if (newValue !== originalValue) {
+                        $.ajax({
+                            url: '{% url "update_alumni_field" %}',
+                            type: 'POST',
+                            data: {
+                                id: id,
+                                field: field,
+                                value: newValue,
+                                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').first().val()
+                            },
+                            success: function (response) {
+                                if (response.success) {
+                                    currentElement.text(newValue);
+                                    pushToHistory(id, field, originalValue, newValue);
+                                    table.columns.adjust(); // Adjust the column widths dynamically after editing
+                                } else {
+                                    alert('Update failed: ' + (response.error || 'Unknown error'));
+                                    currentElement.text(originalValue);
+                                }
+                            },
+                            error: function () {
+                                alert('Update failed due to server error.');
+                                currentElement.text(originalValue);
+                            }
+                        });
+                    } else {
+                        currentElement.text(originalValue);
+                    }
+                },
+                keyup: function (e) {
+                    if (e.key === 'Enter') $(this).blur();
+                    if (e.key === 'Escape') currentElement.text(originalValue);
+                }
+            });
+
+            currentElement.html(input);
+            input.focus();
+        });
+
+        // Flash message fade
+        setTimeout(() => {
+            $('.flash-message').fadeOut();
+        }, 5000);
+
+        // Select all checkboxes
+        $('#select-all').on('click', function () {
+            $('.alumni-checkbox').prop('checked', this.checked);
+        });
+
+        // Set hidden input for selected alumni
+        $('#bulkRemoveForm').on('submit', function () {
+            const selectedIds = $('.alumni-checkbox:checked').map(function () {
+                return $(this).val();
+            }).get();
+            $('#selected-alumni-hidden').val(selectedIds.join(','));
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Post Job</title>
+    {% load static %}
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        header {
+            background-color: #1a1a2e;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            color: white;
+            font-size: 22px;
+        }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .nav-toggle div {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 4px 0;
+            transition: all 0.3s ease;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 5px;
+        }
+
+        nav ul li {
+            display: inline;
+        }
+
+        nav a {
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #1a1a2e;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="datetime-local"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button{
+            background-color: #16213e;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+            margin-right: 5px;
+        }
+
+        button:hover{
+            background-color: #ffcc00;
+            color: #1a1a2e;
+        }
+
+
+        .message {
+            background-color: #e2f0d9;
+            color: #2e7d32;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-toggle {
+                display: flex;
+            }
+
+            nav ul {
+                display: none;
+                flex-direction: column;
+                background-color: #1a1a2e;
+                position: absolute;
+                top: 60px;
+                right: 20px;
+                padding: 10px;
+                border-radius: 8px;
+            }
+
+            nav ul li {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Alumni Information System</h1>
+        <div class="nav-toggle" onclick="toggleNav()">
+            <div></div><div></div><div></div>
+        </div>
+        <nav>
+            <ul id="nav-links">
+                <li><a href="{% url 'my_profile' %}">My Profile</a></li>
+                <li><a href="{% url 'dashboard_alumni' %}">Dashboard</a></li>
+                <li><a href="{% url 'alumni_directory' %}">Alumni Directory</a></li>
+                <li><a href="{% url 'view_jobs' %}">View Jobs</a></li>
+                <li><a href="{% url 'view_events' %}">View Events</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Post a Job</h2>
+
+        {% if messages %}
+            <div class="message" id="flash-message">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="POST" onsubmit="return validateJobForm();">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="job_title">Job Title <span style="color:red;">*</span></label>
+                <input type="text" id="job_title" name="job_title" required>
+            </div>
+
+            <div class="form-group">
+                <label for="company">Company <span style="color:red;">*</span></label>
+                <input type="text" id="company" name="company" required>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location <span style="color:red;">*</span></label>
+                <input type="text" id="location" name="location" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Job Description <span style="color:red;">*</span></label>
+                <textarea id="description" name="description" rows="4" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="registration_link">Registration Link</label>
+                <input type="text" id="registration_link" name="registration_link">
+            </div>
+            
+            <div class="form-group">
+                <label for="expiration_date">Expiration Date <span style="color:red;">*</span></label>
+                <input type="datetime-local" id="expiration_date" name="expiration_date" required>
+            </div>
+
+            <button type="submit">Post Job</button>
+        </form>
+    </div>
+
+    <script>
+        function toggleNav() {
+            const navLinks = document.getElementById('nav-links');
+            navLinks.classList.toggle('show');
+        }
+
+        setTimeout(() => {
+            const flash = document.getElementById('flash-message');
+            if (flash) {
+                flash.style.transition = 'opacity 1s';
+                flash.style.opacity = '0';
+                setTimeout(() => flash.remove(), 1000);
+            }
+        }, 5000);
+
+        function validateJobForm() {
+            const fields = [
+                { id: 'job_title', name: 'Job Title' },
+                { id: 'company', name: 'Company' },
+                { id: 'location', name: 'Location' },
+                { id: 'description', name: 'Job Description' },
+                { id: 'registration_link', name: 'Registration Link' },
+                { id: 'expiration_date', name: 'Expiration Date' },
+            ];
+
+            for (let field of fields) {
+                const input = document.getElementById(field.id);
+                if (!input.value.trim()) {
+                    alert(`${field.name} is required.`);
+                    input.focus();
+                    return false;
+                }
+            }
+            // Validate registration link specifically
+            const regLink = document.getElementById('registration_link').value.trim();
+            const urlPattern = /^(https?:\/\/)/i;  // must start with http:// or https://
+
+            if (!urlPattern.test(regLink)) {
+                alert('Registration Link must start with http:// or https://');
+                document.getElementById('registration_link').focus();
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django stuff:
+db.sqlite3
+media/
+staticfiles/
+
+# Environment settings
+.env
+*.env
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Python virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Migrations (optional - keep if you want to version control them)
+# alumni/migrations/*.py
+# !alumni/migrations/__init__.py

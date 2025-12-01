@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/my_profile.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+<header>
+    <h1>Alumni Information System</h1>
+    <div class="nav-toggle" onclick="toggleNav()">
+        <div></div><div></div><div></div>
+    </div>
+    <nav>
+        <ul id="nav-links">
+            <li><a href="{% url 'my_profile' %}">My Profile</a></li>
+            <li><a href="{% url 'dashboard_alumni' %}">Dashboard</a></li>
+            <li><a href="{% url 'alumni_directory' %}">Alumni Directory</a></li>
+            <li><a href="{% url 'view_jobs' %}">View Jobs</a></li>
+            <li><a href="{% url 'view_events' %}">View Events</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="container">
+
+    {% if messages %}
+    <div id="flash-messages">
+        {% for message in messages %}
+            <div class="flash-message flash-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Profile Info Section -->
+    <section class="profile-section">
+        <h2>Profile Information</h2>
+        
+        <div class="profile-card">
+            <form method="POST" enctype="multipart/form-data" action="{% url 'upload_profile_picture' %}">
+                {% csrf_token %}
+                <div class="profile-image">
+                    <label for="profile-picture-upload" title="Click to change picture">
+                        {% if alumni.profile_picture %}
+                            <img src="{{ alumni.profile_picture.url }}" alt="Profile Picture" class="profile-pic" width="120" height="120">
+                        {% else %}
+                            <img src="{% static 'images/default.png' %}" alt="Default Profile Picture" class="profile-pic" width="120" height="120">
+                        {% endif %}
+                    </label>
+                    <input type="file" id="profile-picture-upload" name="profile_picture" accept="image/*" style="display: none;" onchange="this.form.submit();">
+                    <p class="upload-instruction">Please upload a clear,<br>head-on photo of yourself.</p>
+                </div>
+            </form>
+            <div class="profile-info">
+                <h3>{{ request.user.get_full_name }}</h3>
+                <div class="stats">
+                    <div class="stat">
+                        <strong>{{ job_count }}</strong>
+                        <span>Jobs Posted</span>
+                    </div>
+                    <div class="stat">
+                        <strong>{{ event_count }}</strong>
+                        <span>Events Posted</span>
+                    </div>
+                </div>
+
+                <!-- Social Links -->
+                <div class="social-links">
+                    {% if alumni.linkedin %}
+                    <a href="{{ alumni.linkedin }}" target="_blank" title="LinkedIn" data-field="linkedin"><i class="fab fa-linkedin"></i></a>
+                    {% endif %}
+                    {% if alumni.github %}
+                    <a href="{{ alumni.github }}" target="_blank" title="GitHub" data-field="github"><i class="fab fa-github"></i></a>
+                    {% endif %}
+                    {% if alumni.twitter %}
+                    <a href="{{ alumni.twitter }}" target="_blank" title="Twitter" data-field="twitter"><i class="fab fa-x-twitter"></i></a>
+                    {% endif %}
+                    {% if alumni.website %}
+                    <a href="{{ alumni.website }}" target="_blank" title="Website" data-field="website"><i class="fas fa-globe"></i></a>
+                    {% endif %}
+                    {% if alumni.instagram %}
+                    <a href="{{ alumni.instagram }}" target="_blank" title="Instagram" data-field="instagram"><i class="fab fa-instagram"></i></a>
+                    {% endif %}
+                    {% if alumni.facebook %}
+                    <a href="{{ alumni.facebook }}" target="_blank" title="Facebook" data-field="facebook"><i class="fab fa-facebook"></i></a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr><th>Field</th><th>Information</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Roll No</td><td data-field="roll_no" contenteditable="true">{{ alumni.roll_no }}</td></tr>
+                <tr><td>First Name</td><td data-field="first_name" contenteditable="true">{{ alumni.user.first_name }}</td></tr>
+                <tr><td>Last Name</td><td data-field="last_name" contenteditable="true">{{ alumni.user.last_name }}</td></tr>
+                <tr><td>Gender</td><td data-field="gender" contenteditable="true">{{ alumni.gender }}</td></tr>
+                <tr><td>Email</td><td data-field="email" contenteditable="true">{{ alumni.user.email }}</td></tr>
+                <tr><td>Graduation Year</td><td data-field="graduation_year" contenteditable="true">{{ alumni.graduation_year }}</td></tr>
+                <tr><td>Major</td><td data-field="major" contenteditable="true">{{ alumni.major }}</td></tr>
+                <tr><td>Phone</td><td data-field="phone" contenteditable="true">{{ alumni.phone }}</td></tr>
+                <tr><td>Location</td><td data-field="location" contenteditable="true">{{ alumni.location }}</td></tr>
+                <tr><td>Current Position</td><td data-field="current_position" contenteditable="true">{{ alumni.current_position }}</td></tr>
+                <tr><td>Company</td><td data-field="company" contenteditable="true">{{ alumni.company }}</td></tr>
+                <tr><td>Bio</td><td data-field="bio" contenteditable="true">{{ alumni.bio }}</td></tr>
+                <tr><td>LinkedIn</td><td data-field="linkedin" contenteditable="true">{{ alumni.linkedin }}</td></tr>
+                <tr><td>GitHub</td><td data-field="github" contenteditable="true">{{ alumni.github }}</td></tr>
+                <tr><td>Twitter</td><td data-field="twitter" contenteditable="true">{{ alumni.twitter }}</td></tr>
+                <tr><td>Website</td><td data-field="website" contenteditable="true">{{ alumni.website }}</td></tr>
+                <tr><td>Instagram</td><td data-field="instagram" contenteditable="true">{{ alumni.instagram }}</td></tr>
+                <tr><td>Facebook</td><td data-field="facebook" contenteditable="true">{{ alumni.facebook }}</td></tr>
+            </tbody>
+        </table>
+
+        <p class="note">Click on any field above to edit. Press Enter or click outside to save.</p>
+    </section>
+
+    <div class="change-password-container">
+        <a href="{% url 'password_change' %}" class="change-password-btn">Change Password</a>
+    </div>
+
+</div>
+
+<script>
+    function toggleNav() {
+        document.getElementById('nav-links').classList.toggle('show');
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+
+    $(document).ready(function () {
+        $('td[contenteditable=true]').on('focus', function () {
+            $(this).addClass('editing');
+        }).on('blur', function () {
+            $(this).removeClass('editing');
+        });
+
+        $('td[contenteditable=true]').on('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                $(this).blur();  // Trigger blur to initiate save
+            }
+        });
+
+        $('td[contenteditable=true]').on('blur', function () {
+            const td = $(this);
+            const field = td.data('field');
+            const value = td.text().trim();
+
+            $.ajax({
+                url: "{% url 'update_profile_field' %}",
+                method: "POST",
+                headers: { 'X-CSRFToken': csrftoken },
+                data: {
+                    'field': field,
+                    'value': value
+                },
+                success: function (response) {
+                    td.css('background-color', '#d4edda');
+                    setTimeout(() => td.css('background-color', ''), 1000);
+
+                    if (['linkedin', 'github', 'twitter', 'website', 'instagram', 'facebook'].includes(field)) {
+                        updateSocialLinks(field, value);
+                    }
+                },
+                error: function () {
+                    td.css('background-color', '#f8d7da');
+                    setTimeout(() => td.css('background-color', ''), 1000);
+                }
+            });
+        });
+
+        setTimeout(function () {
+            $('.flash-message').fadeOut(1000, function () {
+                $(this).remove();
+            });
+        }, 5000);
+    });
+
+    function updateSocialLinks(field, value) {
+        const socialLinksDiv = $('.social-links');
+        let existingLink = socialLinksDiv.find(`a[data-field="${field}"]`);
+
+        if (value) {
+            if (existingLink.length > 0) {
+                existingLink.attr('href', value);
+            } else {
+                let iconClass = '';
+                if (field === 'linkedin') iconClass = 'fab fa-linkedin';
+                else if (field === 'github') iconClass = 'fab fa-github';
+                else if (field === 'twitter') iconClass = 'fab fa-x-twitter';
+                else if (field === 'website') iconClass = 'fas fa-globe';
+                else if (field === 'instagram') iconClass = 'fab fa-instagram';
+                else if (field === 'facebook') iconClass = 'fab fa-facebook';
+
+                const newLink = $(`<a href="${value}" target="_blank" title="${field}" data-field="${field}"><i class="${iconClass}"></i></a>`);
+                socialLinksDiv.append(newLink.hide().fadeIn(500));
+            }
+        } else {
+            existingLink.fadeOut(500, function () { $(this).remove(); });
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View All Jobs</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/dashboard_alumni.css' %}">
+
+    <!-- FontAwesome for button icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.0/css/responsive.dataTables.min.css">
+
+    <!-- jQuery & DataTables JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.4.0/js/dataTables.responsive.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #eef1f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #1a1a2e;
+            padding: 20px 30px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 5px;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .profile-section {
+            background: white;
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .profile-card {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-image img {
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .profile-info h3 {
+            margin: 0;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .stat {
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #1a1a2e;
+            margin-bottom: 15px;
+        }
+
+        table.dataTable {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+
+        table.dataTable thead th {
+            background-color: #1a1a2e;
+            color: white;
+            padding: 14px;
+        }
+
+        table.dataTable td {
+            padding: 14px;
+            color: #333;
+        }
+
+        table.dataTable tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table.dataTable tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        table.dataTable thead input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 6px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background-color: #ddd;
+            margin: 40px 0;
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .profile-card {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+        }
+        /* Apply Link Styles */
+        a.apply-link {
+            color: #4CAF50; /* Green for active link */
+            text-decoration: none;
+            font-weight: bold;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        a.apply-link:hover {
+            background-color: #45a049; /* Darker green on hover */
+            color: white;
+        }
+        /* Disabled Link Style */
+        span.disabled {
+            color: #aaa; /* Gray for disabled state */
+            font-style: italic;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Alumni Information System</h1>
+    <div class="nav-toggle" onclick="toggleNav()">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+    <nav>
+        <ul id="nav-links">
+            <li><a href="{% url 'my_profile' %}">My Profile</a></li>
+            <li><a href="{% url 'dashboard_alumni' %}">Dashboard</a></li>
+            <li><a href="{% url 'alumni_directory' %}">Alumni Directory</a></li>
+            <li><a href="{% url 'view_jobs' %}">View Jobs</a></li>
+            <li><a href="{% url 'view_events' %}">View Events</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="container">
+    <h2>All Alumni Jobs</h2>
+
+    <div class="table-responsive">
+        <table id="jobsTable" class="display nowrap" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Location</th>
+                    <th>Description</th>
+                    <th>Expiration Date</th>
+                    <th>Posted By</th>
+                    <th>Action</th>
+                </tr>
+                <tr class="filters">
+                    <th><input type="text" placeholder="Search Job Title"></th>
+                    <th><input type="text" placeholder="Search Company"></th>
+                    <th><input type="text" placeholder="Search Location"></th>
+                    <th><input type="text" placeholder="Search Description"></th>
+                    <th><input type="text" placeholder="Search Date"></th>
+                    <th><input type="text" placeholder="Search Posted By"></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in all_jobs %}
+                <tr>
+                    <td>{{ job.job_title }}</td>
+                    <td>{{ job.company }}</td>
+                    <td>{{ job.location }}</td>
+                    <td>{{ job.description }}</td>
+                    <td>{{ job.expiration_date }}</td>
+                    <td>{{ job.posted_by.get_full_name|default:job.posted_by.username }}</td>
+                    <td>
+                        {% if job.registration_link %}
+                            <a href="{{ job.registration_link }}" target="_blank" class="apply-link">Apply</a>
+                        {% else %}
+                            <span class="disabled">-</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <a class="post-job" href="{% url 'dashboard_alumni' %}">Back to Dashboard</a>
+</div>
+
+<script>
+    function toggleNav() {
+        document.getElementById("nav-links").classList.toggle("show");
+    }
+
+    $(document).ready(function () {
+        const table = $('#jobsTable').DataTable({
+            scrollX: true,
+            paging: true,
+            ordering: true,
+            autoWidth: false,
+            responsive: false,
+            pageLength: 10,
+            lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+            dom: '<"top-toolbar d-flex justify-content-between"<"dt-length-left"l><"dt-buttons-right"B>>rt<"bottom-toolbar d-flex justify-content-between"ip>',
+            buttons: [
+                { extend: 'copy', text: '<i class="fas fa-copy"></i> Copy', className: 'btn-icon',
+                            format: {
+                                body: function (data, row, column, node) {
+                                    if (column === 7) { // Column index for registration link
+                                        return $(node).find('a').attr('href') || "-"; // Extract the href attribute
+                                    }
+                                    return data;
+                                }
+                            } },
+                { extend: 'excel', text: '<i class="fas fa-file-excel"></i> Excel', className: 'btn-icon',format: {
+                                body: function (data, row, column, node) {
+                                    if (column === 7) { // Column index for registration link
+                                        return $(node).find('a').attr('href') || "-"; // Extract the href attribute
+                                    }
+                                    return data;
+                                }
+                            }  },
+                { extend: 'csv', text: '<i class="fas fa-file-csv"></i> CSV', className: 'btn-icon',format: {
+                                body: function (data, row, column, node) {
+                                    if (column === 7) { // Column index for registration link
+                                        return $(node).find('a').attr('href') || "-"; // Extract the href attribute
+                                    }
+                                    return data;
+                                }
+                            }  },
+                { extend: 'pdf', text: '<i class="fas fa-file-pdf"></i> PDF', className: 'btn-icon',format: {
+                                body: function (data, row, column, node) {
+                                    if (column === 7) { // Column index for registration link
+                                        return $(node).find('a').attr('href') || "-"; // Extract the href attribute
+                                    }
+                                    return data;
+                                }
+                            }  }
+            ],
+            orderCellsTop: true,
+            fixedHeader: true,
+            initComplete: function () {
+                const api = this.api();
+                api.columns().every(function (colIdx) {
+                    $('input', $('.filters th')[colIdx]).on('input', function () {
+                        api.column(colIdx).search(this.value).draw();
+                    });
+                });
+            }
+        });
+
+        setTimeout(() => {
+            $('.flash-message').fadeOut();
+        }, 5000);
+    });
+</script>
+
+</body>
+</html>

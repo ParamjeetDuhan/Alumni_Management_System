@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Post Event</title>
+    {% load static %}
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        header {
+            background-color: #1a1a2e;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            color: white;
+            font-size: 22px;
+        }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .nav-toggle div {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 4px 0;
+            transition: all 0.3s ease;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 5px;
+        }
+
+        nav ul li {
+            display: inline;
+        }
+
+        nav a {
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #1a1a2e;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="datetime-local"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button{
+            background-color: #16213e;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+            margin-right: 5px;
+        }
+
+        button:hover{
+            background-color: #ffcc00;
+            color: #1a1a2e;
+        }
+
+
+        .message {
+            background-color: #e2f0d9;
+            color: #2e7d32;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-toggle {
+                display: flex;
+            }
+
+            nav ul {
+                display: none;
+                flex-direction: column;
+                background-color: #1a1a2e;
+                position: absolute;
+                top: 60px;
+                right: 20px;
+                padding: 10px;
+                border-radius: 8px;
+            }
+
+            nav ul li {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Alumni Information System</h1>
+        <div class="nav-toggle" onclick="toggleNav()">
+            <div></div><div></div><div></div>
+        </div>
+        <nav>
+            <ul id="nav-links">
+                <li><a href="{% url 'my_profile' %}">My Profile</a></li>
+                <li><a href="{% url 'dashboard_alumni' %}">Dashboard</a></li>
+                <li><a href="{% url 'alumni_directory' %}">Alumni Directory</a></li>
+                <li><a href="{% url 'view_jobs' %}">View Jobs</a></li>
+                <li><a href="{% url 'view_events' %}">View Events</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Post an Event</h2>
+
+        {% if messages %}
+            <div class="message" id="flash-message">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="POST" onsubmit="return validateEventForm();">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="event_name">Event Name <span style="color:red;">*</span></label>
+                <input type="text" id="event_name" name="event_name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="event_description">Event Description <span style="color:red;">*</span></label>
+                <textarea id="event_description" name="event_description" rows="4" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="event_date">Event Date <span style="color:red;">*</span></label>
+                <input type="datetime-local" id="event_date" name="event_date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" name="location">
+            </div>
+
+            <button type="submit">Post Event</button>
+        </form>
+    </div>
+
+    <script>
+        function toggleNav() {
+            const navLinks = document.getElementById('nav-links');
+            navLinks.classList.toggle('show');
+        }
+
+        setTimeout(() => {
+            const flash = document.getElementById('flash-message');
+            if (flash) {
+                flash.style.transition = 'opacity 1s';
+                flash.style.opacity = '0';
+                setTimeout(() => flash.remove(), 1000);
+            }
+        }, 5000);
+
+        function validateEventForm() {
+            const requiredFields = [
+                { id: 'event_name', name: 'Event Name' },
+                { id: 'event_description', name: 'Event Description' },
+                { id: 'event_date', name: 'Event Date' },
+            ];
+
+            for (let field of requiredFields) {
+                const input = document.getElementById(field.id);
+                if (!input.value.trim()) {
+                    alert(`${field.name} is required.`);
+                    input.focus();
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Edit News</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/edit_news.css' %}">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+        }
+
+        header {
+            background-color: #1a1a2e;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        header h1 {
+            margin: 0;
+            color: white;
+            font-size: 22px;
+        }
+
+        nav ul {
+            list-style-type: none;
+            display: flex;
+            gap: 20px;
+            padding: 0;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .nav-toggle div {
+            height: 3px;
+            width: 25px;
+            background: white;
+            margin: 4px 0;
+        }
+
+        #nav-links.show {
+            display: flex !important;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #1a1a2e;
+        }
+
+        form label {
+            display: block;
+            margin: 15px 0 5px;
+            font-weight: 600;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button{
+            background-color: #16213e;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+            margin-right: 5px;
+        }
+
+        button:hover{
+            background-color: #ffcc00;
+            color: #1a1a2e;
+        }
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+
+        .flash-message {
+            padding: 10px;
+            border-radius: 6px;
+            margin: 5px 0;
+            font-weight: 500;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .flash-success { background-color: #d4edda; color: #155724; }
+        .flash-error { background-color: #f8d7da; color: #721c24; }
+        .flash-info { background-color: #d1ecf1; color: #0c5460; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-toggle {
+                display: flex;
+            }
+
+            nav ul {
+                display: none;
+                flex-direction: column;
+                background: #1a1a2e;
+                position: absolute;
+                top: 60px;
+                right: 20px;
+                padding: 10px;
+                border-radius: 8px;
+            }
+
+            nav ul li {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Alumni Information System</h1>
+        <div class="nav-toggle" onclick="toggleNav()">
+            <div></div><div></div><div></div>
+        </div>
+        <nav>
+            <ul id="nav-links">
+                <li><a href="{% url 'dashboard_admin' %}">Dashboard</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        {% if messages %}
+        <div class="flash-messages">
+            {% for message in messages %}
+                <div class="flash-message flash-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <h2>Edit News</h2>
+        <form action="{% url 'edit_news' news.id %}" method="POST" onsubmit="return validateNewsForm();">
+            {% csrf_token %}
+
+            <label for="title">Title <span style="color:red;">*</span></label>
+            <input type="text" name="title" id="title" value="{{ news.title }}" required>
+
+            <label for="content">Content <span style="color:red;">*</span></label>
+            <textarea name="content" id="content" rows="5" required>{{ news.content }}</textarea>
+
+            <button type="submit">Update News</button>
+        </form>
+    </div>
+
+    <script>
+        function toggleNav() {
+            const navLinks = document.getElementById('nav-links');
+            navLinks.classList.toggle('show');
+        }
+
+        setTimeout(() => {
+            document.querySelectorAll('.flash-message').forEach(msg => {
+                msg.style.transition = 'opacity 1s';
+                msg.style.opacity = '0';
+                setTimeout(() => msg.remove(), 1000);
+            });
+        }, 5000);
+
+        function validateNewsForm() {
+            const title = document.getElementById("title");
+            const content = document.getElementById("content");
+
+            if (!title.value.trim()) {
+                alert("Title is required.");
+                title.focus();
+                return false;
+            }
+
+            if (!content.value.trim()) {
+                alert("Content is required.");
+                content.focus();
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</body>
+</html>

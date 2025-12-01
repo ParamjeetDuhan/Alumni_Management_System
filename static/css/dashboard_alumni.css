@@ -1,0 +1,291 @@
+/* ===== Base Reset & Theme ===== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    color: #2c2c2c;
+    line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ===== Header & Navigation ===== */
+header {
+    background: linear-gradient(to right, #1a1a2e, #16213e);
+    color: white;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.typing-title {
+    font-size: 26px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-toggle div {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    margin: 4px 0;
+    transition: all 0.3s ease-in-out;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav a {
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+nav a:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* ===== Container ===== */
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* ===== Section Titles ===== */
+h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #1a1a2e;
+    transition: color 0.3s ease;
+}
+
+/* ===== Flash Messages ===== */
+.flash-messages {
+    margin-bottom: 20px;
+}
+
+.flash-message {
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: white;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInSmooth 0.4s forwards ease-out;
+}
+
+.flash-success {
+    background-color: #28a745;
+}
+
+.flash-danger {
+    background-color: #dc3545;
+}
+
+/* ===== Section Layouts ===== */
+.section {
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 40px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInSmooth 0.4s forwards ease-out;
+}
+
+/* ===== Tables ===== */
+.table-responsive {
+    overflow-x: auto;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+table.dataTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+table.dataTable th,
+table.dataTable td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+    transition: background-color 0.3s ease;
+}
+
+table.dataTable th {
+    background-color: #16213e;
+    color: #fff;
+}
+
+table.dataTable tr:hover td {
+    background-color: #f7f7f7;
+}
+
+/* Filter Inputs */
+.filters input[type="text"] {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* ===== Buttons ===== */
+button,
+.post-job {
+    background-color: #16213e;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin-right: 5px;
+}
+
+button:hover,
+.post-job:hover {
+    background-color: #ffcc00;
+    color: #1a1a2e;
+}
+
+button i, .post-job i {
+    margin-right: 6px;
+}
+
+/* DataTables Export Buttons */
+button.dt-button.btn-icon {
+    background-color: #16213e;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+    margin-right: 8px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+button.dt-button.btn-icon:hover {
+    background-color: #ffcc00;
+    color: black;
+}
+
+/* ===== DataTables Layout ===== */
+.top-toolbar,
+.bottom-toolbar {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 10px 0 15px;
+    gap: 10px;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    padding: 6px 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+/* Apply Link Styles */
+a.apply-link {
+    color: #4CAF50; /* Green for active link */
+    text-decoration: none;
+    font-weight: bold;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+a.apply-link:hover {
+    background-color: #45a049; /* Darker green on hover */
+    color: white;
+}
+/* Disabled Link Style */
+span.disabled {
+    color: #aaa; /* Gray for disabled state */
+    font-style: italic;
+    padding: 8px 12px;
+    border-radius: 4px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .nav-toggle {
+        display: flex;
+    }
+
+    nav ul {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        background-color: #1a1a2e;
+        width: 100%;
+        padding: 15px 0;
+        transition: all 0.3s ease-in-out;
+    }
+
+    nav ul.active {
+        display: flex;
+    }
+
+    nav ul li {
+        text-align: center;
+        padding: 10px 0;
+    }
+
+    .top-toolbar,
+    .bottom-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* ===== Animations ===== */
+@keyframes fadeInSmooth {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,0 +1,359 @@
+/* ===== Base Reset & Theme ===== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    color: #2c2c2c;
+    line-height: 1.6;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* ===== Header & Navigation ===== */
+header {
+    background: linear-gradient(to right, #1a1a2e, #16213e);
+    color: white;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.typing-title {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.nav-toggle div {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    margin: 4px 0;
+    transition: all 0.3s ease;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 5px;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav a {
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+nav a:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+header h1 {
+    font-size: 1.6rem;
+    color: white;
+}
+
+/* Headings */
+h2 {
+    color: #1a1a2e;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.container {
+    padding: 20px;
+    max-width: 100%;
+}
+
+/* Upload form styling */
+.upload-form {
+    margin: 0 auto 20px auto;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.upload-form input[type="file"] {
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.upload-form button {
+    background-color: #1a1a2e;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.upload-form button:hover {
+    background-color: #ffcc00;
+    color: #1a1a2e;
+}
+
+/* Flash messages */
+.flash-messages {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.flash-message {
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    color: white;
+    display: inline-block;
+    max-width: 600px;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.flash-success { background-color: #28a745; }
+.flash-error { background-color: #dc3545; }
+.flash-warning { background-color: #dc3545; }
+
+/* Table container and styling */
+.table-container {
+    overflow-x: auto;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+#alumniTable {
+    min-width: 1500px;
+    width: max-content;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Table header */
+table.dataTable thead th {
+    background-color: #1a1a2e;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding: 12px 10px;
+    font-weight: 600;
+    text-align: left;
+    white-space: nowrap;
+    font-size: 15px;
+}
+
+table.dataTable tbody td {
+    padding: 12px 10px;
+    text-align: left;
+    white-space: nowrap;
+    font-size: 15px;
+    border: 1px solid #ddd;
+}
+
+table.dataTable tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Column filters */
+table.dataTable thead input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 4px;
+    font-size: 13px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* DataTables buttons */
+.dataTables_wrapper .dt-buttons {
+    float: right;
+    margin-bottom: 10px;
+}
+
+/* DataTables Export Buttons */
+button.dt-button.btn-icon {
+    background-color: #16213e;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+    margin-left: 8px;
+    transition: background-color 0.3s;
+}
+
+button.dt-button.btn-icon:hover {
+    background-color: #ffcc00;
+    color: black;
+}
+
+/* Action buttons */
+
+.download-link {
+    display: inline-block;
+    background-color: #1a1a2e; /* match theme */
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    margin: 20px auto; /* vertical spacing + center horizontally */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-align: center;
+}
+
+.download-link i {
+    margin-right: 8px;
+}
+
+.download-link:hover {
+    background-color: #ffcc00;
+    color: #1a1a2e;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 204, 0, 0.3);
+}
+
+/* Wrapper to center the link */
+.download-link-wrapper {
+    text-align: center;
+}
+
+
+.control-buttons-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.left-controls, .right-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-action {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: 500;
+}
+
+.btn-action:hover {
+    background-color: #357ab8;
+}
+
+.btn-remove {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: 500;
+}
+
+.btn-remove:hover {
+    background-color: #c0392b;
+}
+
+
+.center-heading {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #1a1a2e;
+}
+
+/* DataTables layout */
+.dataTables_wrapper .dataTables_length {
+    float: left;
+    margin-bottom: 10px;
+}
+
+.dataTables_wrapper .dataTables_filter {
+    clear: both;
+    float: right;
+    margin-bottom: 10px;
+}
+
+.dataTables_wrapper .dataTables_info {
+    float: left;
+    margin-top: 5px;
+}
+
+.dataTables_wrapper .dataTables_paginate {
+    float: right;
+    margin-top: 5px;
+}
+
+/* Responsive tweaks */
+@media screen and (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .upload-form {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .dt-buttons {
+        float: none;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .table-container {
+        padding: 10px;
+    }
+
+    table.dataTable thead th,
+    table.dataTable tbody td {
+        font-size: 14px;
+    }
+
+    .dataTables_wrapper .dt-buttons,
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate {
+        float: none;
+        text-align: center;
+        margin: 10px 0;
+    }
+}
